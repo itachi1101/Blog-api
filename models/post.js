@@ -10,26 +10,23 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pic: {
-      type: Buffer,
+    imagePath: {
+      type: String,
       required: false,
     },
-    category: {
-      type: String,
-      default: "global",
-    },
-    isPrivate: {
+    category:
+      [{
+        type: String
+      }]
+    ,
+    draft: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     author: {
       type: String,
       required: true,
     },
-    type:{
-      type:String,
-      required:true
-    }
   },
   { timestamps: true }
 );
