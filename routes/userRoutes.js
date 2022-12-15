@@ -1,16 +1,19 @@
 const { Router } = require("express");
+const env=require('dotenv')
+const cloudinary = require('cloudinary').v2
 const userController = require("../controllers/userController");
-const router = Router();
 const authenticate = require("../middlewares/authMiddleware");
-const multer = require("multer");
-const upload = multer({
-  limits: {
-    fileSize: 2000000,
-    fileFilter(req, file, cb) {
-      cb(undefined, true);
-    },
-  },
+env.config()
+const router = Router();
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
 });
+
+
+
+
 router.put(
   "/api/user/updatelikedposts/",
   authenticate.auth,
@@ -26,10 +29,8 @@ router.get(
   authenticate.auth,
   userController.getLikedPosts
 );
-router.get("/api/user/:id/avatar", userController.getProfileImage);
 router.post(
   "/api/user/updateUser",
-  upload.single("file"),
   authenticate.auth,
   userController.updateProfile
 );

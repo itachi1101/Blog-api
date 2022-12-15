@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pic: {
-      type: Buffer,
+    imagePath: {
+      type:String
     },
 
     liked: [],

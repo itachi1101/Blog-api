@@ -1,27 +1,40 @@
 const { Router } = require("express");
+const env = require('dotenv')
+const cloudinary = require('cloudinary').v2
 const authController = require("../controllers/authController");
+env.config()
 const router = Router();
-const multer = require("multer");
 
-const upload = multer({
-  limits: {
-    fileSize: 2000000,
-  },
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return cb(new Error("Please upload an image"));
-    }
-    cb(undefined, true);
-  },
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
 });
-router.post(
-  "/api/signup/",
-  upload.single("pic"),
-  authController.signup,
-  (error, req, res, next) => {
-    res.status(400).json({ error: error.message });
+
+// signup route
+router.post("/api/signup/", async (req, res, next) => {
+  const file = req.files.image
+  try {
+    const { url } = await cloudinary.uploader.upload(file.tempFilePath, {
+      folder: "profile-photos/",
+      responsive_breakpoints:
+      {
+        create_derived: true,
+        bytes_step: 20000,
+        min_width: 200,
+        max_width: 1000
+      }
+    })
+    req.body.imagePath=url
+    next()
   }
-);
+  catch(error){
+    res.status(400).send({error:error.message})
+  }
+}, authController.signup);
+
+// login route
 router.post("/api/login/", authController.login);
 
 module.exports = router;
