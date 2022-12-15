@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const env = require("dotenv");
-const multer = require("multer");
+const fileUpload=require('express-fileupload')
 const cors = require("cors");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
@@ -21,7 +21,9 @@ try {
   console.log(`Error:${err.message}`);
   process.exit();
 }
-
+app.use(fileUpload({
+  useTempFiles : true,
+}))
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(userRoutes);
