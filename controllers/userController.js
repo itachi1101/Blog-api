@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+
+
 module.exports.addLikedPosts = async (req, res) => {
   try {
     const id = req.user._id.toHexString();
@@ -55,15 +57,6 @@ module.exports.deleteLikedPosts = async (req, res) => {
   }
 };
 
-module.exports.getProfileImage = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.set("Content-Type", "image/jpg");
-    res.send(user.pic);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
 
 module.exports.updateProfile = async (req, res) => {
   try {
