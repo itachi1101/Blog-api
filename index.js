@@ -7,6 +7,7 @@ const app = express();
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
 const userRoutes = require("./routes/userRoutes");
+const activityRoutes=require('./routes/activityRoutes')
 env.config();
 app.use(cors());
 app.use(express.json());
@@ -27,4 +28,5 @@ app.use(fileUpload({
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(userRoutes);
+app.use(activityRoutes)
 app.listen(PORT, (req, res) => console.log(`Listening on Port ${PORT}`));
