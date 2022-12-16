@@ -19,10 +19,10 @@ module.exports.login = async (req, res) => {
     const { email } = req.body;
     const user = await User.Login(email, req.body.password);
     const token = await user.generateAuthToken();
-    const { password, createdAt, updatedAt, isAdmin, __v, liked, pic, ...others } =
+    const { password, createdAt, updatedAt, isAdmin, __v, liked, ...others } =
       user._doc;
     res.status(200).send({
-      others,
+      ...others,
       token,
     });
   } catch (error) {
