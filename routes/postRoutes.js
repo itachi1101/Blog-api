@@ -73,15 +73,17 @@ router.delete(
     }
   },
   postController.deletePostById
-);
-
-
-
-// get all posts 
-router.get("/api/post/allposts", postController.getAllPosts);
-
-
-/// get logged in user post  posts 
+  );
+  
+  
+  // get recent posts
+  router.get("/api/post/recent",postController.getRecentPosts)
+  
+  // get all posts 
+  router.get("/api/post/allposts", postController.getAllPosts);
+  
+  
+  /// get logged in user post  posts 
 router.get(
   "/api/post/myposts/",
   authenticate.auth,
@@ -90,6 +92,9 @@ router.get(
 
 // single post 
 router.get("/api/post/:id", postController.getPostById);
+
+// post serach by user 
+router.get("/api/post/public/:id",postController.getPostByIdFree)
 
 
 

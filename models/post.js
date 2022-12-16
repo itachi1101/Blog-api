@@ -14,10 +14,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    category:
-      [{
-        type: String
-      }]
+    category:[]
     ,
     draft: {
       type: Boolean,
@@ -27,6 +24,10 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    authorId:{
+      type:String,
+      required:true
+    }
   },
   { timestamps: true }
 );

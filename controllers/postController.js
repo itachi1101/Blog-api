@@ -1,22 +1,23 @@
-const Post = require("../models/post");
+
+const Posts = require("../models/post");
 
 // create a post
 module.exports.create = async (req, res) => {
   try {
-    const { title, description, draft, category, author, imagePath } = req.body
-    const post = await Post.create({
-      title, description, author, draft, imagePath, category
+    const { title, description, draft, category, author, imagePath,authorId } = req.body
+    const post = await Posts.create({
+      title, description, author, draft, imagePath, category,authorId
     })
     res.status(201).send(post)
   } catch (error) {
     res.status(400).send({ error: error.message })
   }
-  
+
 };
 // update a post
 module.exports.updatePostById = async (req, res) => {
   try {
-    const updatedPost = await Post.findByIdAndUpdate(
+    const updatedPost = await Posts.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
@@ -33,9 +34,9 @@ module.exports.updatePostById = async (req, res) => {
 module.exports.deletePostById = async (req, res) => {
   const _id = req.params.id;
   try {
-    const post = await Post.findByIdAndDelete(_id);
+    const post = await Posts.findByIdAndDelete(_id);
     if (!post) return res.status(400).send();
-    res.status(200).json({message:"Post Deleted Successfully"});
+    res.status(200).json({ message: "Post Deleted Successfully" });
   } catch (err) {
     res.status(500).json({ err: error });
   }
@@ -47,7 +48,7 @@ module.exports.deletePostById = async (req, res) => {
 module.exports.searchUserPosts = async (req, res) => {
   try {
     const author = req.email;
-    const posts = await Post.find({ author });
+    const posts = await Posts.find({ author });
     if (posts) {
       res.status(200).json({
         data: posts,
@@ -72,12 +73,12 @@ module.exports.getAllPosts = async (req, res) => {
   try {
     const PAGE_SIZE = 6;
     const page = parseInt(req.query.page || "0");
-    const total = await Post.countDocuments({ draft: false });
-    const posts = await Post.find({ draft: false })
+    const total = await Posts.countDocuments({ draft: false });
+    const posts = await Posts.find({ draft: false })
       .limit(PAGE_SIZE)
       .skip(PAGE_SIZE * page);
     if (!posts)
-     res.status(404).json({ posts: "no posts found" });
+      res.status(404).json({ posts: "no posts found" });
     else {
       res.status(200).json({ totalPages: Math.ceil(total / PAGE_SIZE), posts });
     }
@@ -93,7 +94,7 @@ module.exports.getAllPosts = async (req, res) => {
 module.exports.getPostById = async (req, res) => {
   const _id = req.params.id;
   try {
-    const allPosts = await Post.findById(_id);
+    const allPosts = await Posts.findById(_id);
     if (!allPosts) res.status(404).json({ posts: "no posts found" });
     else {
       res.status(200).json({ data: allPosts });
@@ -102,3 +103,33 @@ module.exports.getPostById = async (req, res) => {
     res.status(400).json({ error: err });
   }
 };
+
+
+// get post by id 
+module.exports.getPostByIdFree = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const posts = await Posts.find({authorId:_id,draft:false})
+    if (!posts)
+      res.status(404).send({ data: "no post found" })
+    else {
+      res.status(200).send({ data: posts })
+    }
+  } catch (error) {
+    res.status(400).send({ error: error.message })
+  }
+}
+
+
+// get recent posts
+module.exports.getRecentPosts=async(req,res)=>{
+  try {
+    const posts=await Posts.find({draft:false}).sort({createdAt:-1}).limit(4)
+    res.status(200).send({posts:posts})
+  } catch (error) {
+    res.status(400).send({error:error.message})
+  }
+}
+
+
+
