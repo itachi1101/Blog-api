@@ -12,6 +12,7 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET
 });
+
 router.post(
   "/api/user/update/",
   authenticate.auth,
@@ -31,7 +32,7 @@ router.post(
             max_width: 1000
           }
         })
-        req.body.imagePath=url
+        req.body.imagePath = url
         next()
       } catch (error) {
         res.status(400).send({ error: error.message })
@@ -42,11 +43,10 @@ router.post(
     }
   },
   userController.updateProfile
-  );
-  
-  
-  router.get("/api/user/:id", userController.getUser);
+);
 
+
+router.get("/api/user/:id", userController.getUser);
 
 
 module.exports = router;
