@@ -35,10 +35,13 @@ router.post("/api/post/create", async (req, res, next) => {
 
 // updating a  post
 router.put("/api/post/:id", authenticate.auth, async (req, res, next) => {
-  const file = req.files.image
-  const Currenturl = req.body.imagePath
-  if (file) {
+  let file = null
 
+  if (req["files"]) {
+    file = req.files.image
+  }
+  const Currenturl = req.body.imagePublicId
+  if (file) {
     await cloudinary.uploader.destroy(Currenturl)
     const { url } = await cloudinary.uploader.upload(file.tempFilePath, {
       folder: "post-photos/",
@@ -54,6 +57,7 @@ router.put("/api/post/:id", authenticate.auth, async (req, res, next) => {
     next()
   }
   else {
+
     next()
   }
 

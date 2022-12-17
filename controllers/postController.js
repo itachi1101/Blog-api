@@ -47,8 +47,8 @@ module.exports.deletePostById = async (req, res) => {
 // get logged in users post 
 module.exports.searchUserPosts = async (req, res) => {
   try {
-    const author = req.user.email;
-    const posts = await Posts.find({ author: author });
+    const authorId = req.user._id;
+    const posts = await Posts.find({ authorId });
     if (posts) {
       res.status(200).send(
         posts
@@ -112,7 +112,7 @@ module.exports.getPostByIdFree = async (req, res) => {
     if (!posts)
       res.status(404).send({ data: "no post found" })
     else {
-      res.status(200).send({ data: posts })
+      res.status(200).send(posts)
     }
   } catch (error) {
     res.status(400).send({ error: error.message })

@@ -22,8 +22,8 @@ module.exports.updateProfile = async (req, res) => {
 // get user details
 module.exports.getUser = async (req, res) => {
   try {
-    const user=await User.findById(req.params.id)
-    res.status(200).json({user});
+    const {username,imagePath}=await User.findById(req.params.id)
+    res.status(200).send({username,imagePath})
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
