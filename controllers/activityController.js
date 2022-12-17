@@ -5,7 +5,7 @@ module.exports.createActivity = async (req, res) => {
     try {
         const { postId, userId, likeCounter } = req.body
         const activity = await Activity.create({
-            postId, userId, likeCounter, likes
+            postId, userId, likeCounter
         })
         res.status(201).send(activity)
     } catch (error) {
@@ -32,7 +32,6 @@ module.exports.updateActivity = async (req, res) => {
 
 // get activity
 module.exports.getActivity = async (req, res) => {
-    console.log("hello world")
     try {
         const post = await Activity.find().sort({ likeCounter: -1 }).limit(4)
         res.status(200).send(post)

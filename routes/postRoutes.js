@@ -35,11 +35,15 @@ router.post("/api/post/create", async (req, res, next) => {
 
 // updating a  post
 router.put("/api/post/:id", authenticate.auth, async (req, res, next) => {
-  const file = req.files.image
-  const Currenturl = req.body.imagePath
+  let file = null
+
+  if (req["files"]) {
+    file = req.files.image
+  }
+  const Currenturl = req.body.imagePublicId
   if (file) {
     await cloudinary.uploader.destroy(Currenturl)
-    const { newUrl } = await cloudinary.uploader.upload(file.tempFilePath, {
+    const { url } = await cloudinary.uploader.upload(file.tempFilePath, {
       folder: "post-photos/",
       responsive_breakpoints:
       {
@@ -49,10 +53,11 @@ router.put("/api/post/:id", authenticate.auth, async (req, res, next) => {
         max_width: 1000
       }
     })
-    req.body.imagePath = newUrl
+    req.body.imagePath = url
     next()
   }
   else {
+
     next()
   }
 
@@ -61,29 +66,18 @@ router.put("/api/post/:id", authenticate.auth, async (req, res, next) => {
 
 // deleting  a post
 router.delete(
-  "/api/post/:id",
-  authenticate.auth,async(req,res,next)=>{
-    const url=req.body.imagePath
-    console.log(url)
-    try {
-      await cloudinary.uploader.destroy(url)
-      next()
-    } catch (error) {
-      res.status(400).send({error:error.message})
-    }
-  },
-  postController.deletePostById
-  );
-  
-  
-  // get recent posts
-  router.get("/api/post/recent",postController.getRecentPosts)
-  
-  // get all posts 
-  router.get("/api/post/allposts", postController.getAllPosts);
-  
-  
-  /// get logged in user post  posts 
+  "/api/post/:id", authenticate.auth, postController.deletePostById
+);
+
+
+// get recent posts
+router.get("/api/post/recent", postController.getRecentPosts)
+
+// get all posts 
+router.get("/api/post/allposts", postController.getAllPosts);
+
+
+/// get logged in user post  posts 
 router.get(
   "/api/post/myposts/",
   authenticate.auth,
@@ -94,7 +88,7 @@ router.get(
 router.get("/api/post/:id", postController.getPostById);
 
 // post serach by user 
-router.get("/api/post/public/:id",postController.getPostByIdFree)
+router.get("/api/post/public/:id", postController.getPostByIdFree)
 
 
 

@@ -4,9 +4,9 @@ const Posts = require("../models/post");
 // create a post
 module.exports.create = async (req, res) => {
   try {
-    const { title, description, draft, category, author, imagePath,authorId } = req.body
+    const { title, description, draft, category, author, imagePath, authorId, authorImage } = req.body
     const post = await Posts.create({
-      title, description, author, draft, imagePath, category,authorId
+      title, description, author, draft, imagePath, category, authorId, authorImage
     })
     res.status(201).send(post)
   } catch (error) {
@@ -47,13 +47,12 @@ module.exports.deletePostById = async (req, res) => {
 // get logged in users post 
 module.exports.searchUserPosts = async (req, res) => {
   try {
-    const author = req.email;
-    const posts = await Posts.find({ author });
+    const authorId = req.user._id;
+    const posts = await Posts.find({ authorId });
     if (posts) {
-      res.status(200).json({
-        data: posts,
-        status: "posts found",
-      });
+      res.status(200).send(
+        posts
+      );
     } else {
       res.status(200).json({
         status: "posts not found",
@@ -109,11 +108,11 @@ module.exports.getPostById = async (req, res) => {
 module.exports.getPostByIdFree = async (req, res) => {
   const _id = req.params.id;
   try {
-    const posts = await Posts.find({authorId:_id,draft:false})
+    const posts = await Posts.find({ authorId: _id, draft: false })
     if (!posts)
       res.status(404).send({ data: "no post found" })
     else {
-      res.status(200).send({ data: posts })
+      res.status(200).send(posts)
     }
   } catch (error) {
     res.status(400).send({ error: error.message })
@@ -122,12 +121,12 @@ module.exports.getPostByIdFree = async (req, res) => {
 
 
 // get recent posts
-module.exports.getRecentPosts=async(req,res)=>{
+module.exports.getRecentPosts = async (req, res) => {
   try {
-    const posts=await Posts.find({draft:false}).sort({createdAt:-1}).limit(4)
-    res.status(200).send({posts:posts})
+    const posts = await Posts.find({ draft: false }).sort({ createdAt: -1 }).limit(6)
+    res.status(200).send(posts)
   } catch (error) {
-    res.status(400).send({error:error.message})
+    res.status(400).send({ error: error.message })
   }
 }
 

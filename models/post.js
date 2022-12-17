@@ -27,6 +27,10 @@ const postSchema = new mongoose.Schema(
     authorId:{
       type:String,
       required:true
+    },
+    authorImage:{
+      type:String,
+      required:true
     }
   },
   { timestamps: true }
